@@ -1,5 +1,18 @@
 import { plainToInstance } from 'class-transformer';
-import { IsNumber, IsString, Max, Min, validateSync } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsString,
+  Max,
+  Min,
+  validateSync,
+} from 'class-validator';
+
+export enum ENVIRONMENT {
+  TEST = 'test',
+  DEVELOPMENT = 'development',
+  PRODUCTION = 'production',
+}
 
 export class EnvironmentVariables {
   @IsNumber()
@@ -9,6 +22,12 @@ export class EnvironmentVariables {
 
   @IsString()
   GEMINI_API_KEY: string;
+
+  @IsString()
+  MONGO_URI: string;
+
+  @IsEnum(ENVIRONMENT)
+  NODE_ENV: ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
 }
 
 export function validate(config: Record<string, unknown>) {

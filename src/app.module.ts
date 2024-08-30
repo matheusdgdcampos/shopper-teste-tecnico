@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { validate } from './config/environment-validation';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import {
+  EnvironmentVariables,
+  validate,
+} from './config/environment-validation';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -8,6 +12,14 @@ import { validate } from './config/environment-validation';
       isGlobal: true,
       validate,
       cache: true,
+    }),
+    MongooseModule.forRootAsync({
+      useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
+        uri: configService.getOrThrow('MONGO_URI', {
+          infer: true,
+        }),
+      }),
+      inject: [ConfigService],
     }),
   ],
 })

@@ -3,15 +3,16 @@ services:
     image: mongo
     container_name: mongodb
     restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
     ports:
       - 27017:27017
-
   server:
     build:
       context: .
     ports:
       - 3000:3000
-
   nginx:
     restart: always
     build:
