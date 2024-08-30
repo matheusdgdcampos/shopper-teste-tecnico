@@ -5,6 +5,7 @@ import {
   validate,
 } from './config/environment-validation';
 import { MongooseModule } from '@nestjs/mongoose';
+import { MeasureModule } from './measure/measure.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       }),
       inject: [ConfigService],
     }),
+    MeasureModule,
   ],
 })
 export class AppModule {}
