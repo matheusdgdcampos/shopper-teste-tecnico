@@ -1,9 +1,9 @@
 pre-commit:
   parallel: false
   commands:
-    eslint:
-      glob: "*.ts"
-      run: npx eslint {staged_files} --fix --cache
     pretty:
       glob: "*.ts"
       run: npx prettier --write --cache {staged_files}
+    eslint:
+      glob: "*.ts"
+      run: npx eslint {staged_files} --fix --cache
