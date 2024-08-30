@@ -1,6 +1,6 @@
+import { TestingModuleFactory } from '@/commons/factories/testing-module.factory';
 import { TestingModule } from '@nestjs/testing';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { TestingModuleFactory } from '../commons/testing-module.factory';
 
 describe('MemoryDataabseInstance', () => {
   let moduleRef: TestingModule;

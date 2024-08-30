@@ -1,9 +1,8 @@
+import { AppModule } from '@/app.module';
 import { Logger } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-
-import { AppModule } from '../app.module';
 
 export async function TestingModuleFactory(): Promise<
   [moduleRef: TestingModule, mongod: MongoMemoryServer]
