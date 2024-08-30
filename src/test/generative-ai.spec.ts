@@ -36,7 +36,10 @@ describe('GenerativeAI', () => {
         'utf-8',
       );
       const generatedJsonResponse: any =
-        await generativeAI.generateJSONContentByImage(prompt, base64Image);
+        await generativeAI.generateJSONMeasureValueByBase64Image(
+          prompt,
+          base64Image,
+        );
       expect(generatedJsonResponse).toHaveProperty('measure_value');
     });
   });
