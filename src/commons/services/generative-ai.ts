@@ -1,6 +1,5 @@
 import { EnvironmentVariables } from '@/config/environment-validation';
 import { AICaptureValueError } from '@/errors/ai-capture-value.error';
-import { InvalidMimeTypeError } from '@/errors/invalid-mimetype.error';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -34,32 +33,11 @@ export class GenerativeAI {
     return model;
   }
 
-  private extractMetadataFromBase64Image(base64Image: string) {
-    const splittedContent = base64Image.split(';base64,');
-    const mimeType = splittedContent[0].split(':')[1];
-    return {
-      mimeType,
-      base64: splittedContent[1],
-    };
-  }
-
-  private checkMimetypeIsValid(base64Image: string) {
-    const { mimeType } = this.extractMetadataFromBase64Image(base64Image);
-
-    if (this.validMimeTypes.includes(mimeType)) {
-      return true;
-    }
-
-    return false;
-  }
-
   private factoryGenerativePart(base64Image: string) {
-    const { base64, mimeType } =
-      this.extractMetadataFromBase64Image(base64Image);
     return {
       inlineData: {
-        data: base64,
-        mimeType,
+        data: base64Image,
+        mimeType: 'image/jpeg',
       },
     };
   }
@@ -69,10 +47,6 @@ export class GenerativeAI {
     base64Image: string,
   ): Promise<TGenerativeResponseDto | undefined> {
     try {
-      if (!this.checkMimetypeIsValid(base64Image)) {
-        throw new InvalidMimeTypeError();
-      }
-
       const model = this.getModel();
       const imagePart = this.factoryGenerativePart(base64Image);
       const generatedContent = await model.generateContent([prompt, imagePart]);
