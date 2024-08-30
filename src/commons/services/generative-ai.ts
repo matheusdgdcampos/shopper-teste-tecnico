@@ -42,7 +42,7 @@ export class GenerativeAI {
     };
   }
 
-  public async generateJSONContentByImage(
+  public async generateJSONMeasureValueByBase64Image(
     prompt: string,
     base64Image: string,
   ): Promise<TGenerativeResponseDto | undefined> {
