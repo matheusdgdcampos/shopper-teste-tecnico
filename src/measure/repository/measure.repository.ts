@@ -4,6 +4,7 @@ import { Measure, MEASURE_TYPE } from '../entity/measure';
 import { InjectModel } from '@nestjs/mongoose';
 import { MeasureCreateDto } from '../dto/measure-create.dto';
 import { randomUUID } from 'node:crypto';
+import { endOfDay, startOfDay } from 'date-fns';
 
 @Injectable()
 export class MeasureRepository {
@@ -39,8 +40,15 @@ export class MeasureRepository {
   ) {
     const measure = await this.measureModel
       .find({
-        created_at: { $gte: measure_datetime, $lte: measure_datetime },
-        measure_type: type,
+        $and: [
+          {
+            created_at: {
+              $gte: startOfDay(measure_datetime),
+              $lte: endOfDay(measure_datetime),
+            },
+          },
+          { measure_type: { $eq: type } },
+        ],
       })
       .exec();
     return measure;

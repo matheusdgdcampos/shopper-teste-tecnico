@@ -17,7 +17,7 @@ export class MeasureCreateDto {
       message: 'O campo measure_datetime deve estar no formato datetime',
     },
   )
-  measure_datetime: Date;
+  measure_datetime: string;
 
   @IsEnum(MEASURE_TYPE, {
     message: "O campo measure type deve informar como 'WATER' ou 'GAS'",

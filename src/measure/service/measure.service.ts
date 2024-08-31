@@ -10,6 +10,7 @@ import { MeasureNotFoundException } from '@/errors/measure-not-found.error';
 import { MeasureAlreadyConfirmedException } from '@/errors/measure-already-confirmed.error';
 import { MeasuresListNotFoundException } from '@/errors/measure-list-not-found.error';
 import { MeasureListResponseDto } from '../dto/measure-list-response.dto';
+import { MeasureAlreadyExistsException } from '@/errors/measure-already-exists.error';
 
 @Injectable()
 export class MeasureService {
@@ -22,18 +23,18 @@ export class MeasureService {
 
   async create(measureDto: MeasureCreateDto): Promise<MeasurementResponseDto> {
     try {
+      console.log(measureDto.measure_datetime);
+
       // TODO Need fix this query
-      // const measureAlreadyExists =
-      //   await this.measurementRepository.findMeasureByDatetimeAndType(
-      //     measureDto.measure_datetime.toString(),
-      //     measureDto.measure_type,
-      //   );
+      const measureAlreadyExists =
+        await this.measurementRepository.findMeasureByDatetimeAndType(
+          measureDto.measure_datetime,
+          measureDto.measure_type,
+        );
 
-      // console.log('measureAlreadyExists', measureAlreadyExists);
-
-      // if (measureAlreadyExists.length > 0) {
-      //   throw new MeasureAlreadyExistsException();
-      // }
+      if (measureAlreadyExists.length > 0) {
+        throw new MeasureAlreadyExistsException();
+      }
 
       const prompt =
         'Given the image, return the measurement value in the following JSON Schema:{"type": "object","properties": {"measure_value": {"type": "number"}}}';
