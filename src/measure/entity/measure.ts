@@ -20,7 +20,7 @@ export class Measure {
   image_url: string;
 
   @Prop()
-  measure_value: string;
+  measure_value: number;
 
   @Prop()
   customer_code: string;
