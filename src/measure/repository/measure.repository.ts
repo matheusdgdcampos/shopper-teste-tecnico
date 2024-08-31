@@ -46,15 +46,30 @@ export class MeasureRepository {
     return measure;
   }
 
-  async findMeasureByUuid(measure_uuid: string) {
+  async findByUUID(measure_uuid: string) {
     const measure = await this.measureModel.findOne({ measure_uuid }).exec();
     return measure;
   }
 
-  async confirmMeasure(measure_uuid: string, confirmed_value: number) {
+  async confirm(measure_uuid: string, confirmed_value: number) {
     const measure = await this.measureModel.findOne({ measure_uuid }).exec();
     measure.measure_value = confirmed_value;
     measure.has_confirmed = true;
     await measure.save();
+  }
+
+  async findByCustomerCode(customer_code: string, measure_type?: string) {
+    if (measure_type) {
+      const measures = await this.measureModel.find({
+        customer_code,
+        measure_type: new RegExp(measure_type, 'i'),
+      });
+      return measures;
+    }
+
+    const measures = await this.measureModel.find({
+      customer_code,
+    });
+    return measures;
   }
 }

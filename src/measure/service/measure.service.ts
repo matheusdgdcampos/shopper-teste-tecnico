@@ -8,6 +8,8 @@ import { ValidationError } from 'class-validator';
 import { MeasureConfirmDto } from '../dto/measure-confirm.dto';
 import { MeasureNotFoundException } from '@/errors/measure-not-found.error';
 import { MeasureAlreadyConfirmedException } from '@/errors/measure-already-confirmed.error';
+import { MeasuresListNotFoundException } from '@/errors/measure-list-not-found.error';
+import { MeasureListResponseDto } from '../dto/measure-list-response.dto';
 
 @Injectable()
 export class MeasureService {
@@ -70,7 +72,7 @@ export class MeasureService {
 
   async confirmMeasure(measureConfirmDto: MeasureConfirmDto) {
     try {
-      const measure = await this.measurementRepository.findMeasureByUuid(
+      const measure = await this.measurementRepository.findByUUID(
         measureConfirmDto.measure_uuid,
       );
 
@@ -82,12 +84,44 @@ export class MeasureService {
         throw new MeasureAlreadyConfirmedException();
       }
 
-      await this.measurementRepository.confirmMeasure(
+      await this.measurementRepository.confirm(
         measure.measure_uuid,
         measureConfirmDto.confirmed_value,
       );
 
       return { success: true };
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+  async listMeasuresByCustomerCode(
+    customer_code: string,
+    measure_type?: string,
+  ): Promise<MeasureListResponseDto> {
+    try {
+      const measures = await this.measurementRepository.findByCustomerCode(
+        customer_code,
+        measure_type,
+      );
+
+      if (measures.length === 0) {
+        throw new MeasuresListNotFoundException();
+      }
+
+      const measureMapped = measures.map((measure) => ({
+        measure_uuid: measure.measure_uuid,
+        measure_datetime: measure.measure_datetime,
+        measure_type: measure.measure_type,
+        has_confirmed: measure.has_confirmed,
+        image_url: measure.image_url,
+      }));
+
+      return {
+        customer_code,
+        measures: measureMapped,
+      };
     } catch (error) {
       this.logger.error(error);
       throw error;
